@@ -7,7 +7,7 @@
   Add your open source license, GitHub uses MIT license.
 -->
 
-# Introduction to GitHub
+# Labs for second semester
 
 _Get started using GitHub in less than an hour._
 
@@ -21,9 +21,9 @@ _Get started using GitHub in less than an hour._
   Encourage users to open new tabs for steps!
 -->
 
-## Step 1: Create a branch
+## Uploading and practicing versioning 
 
-_Welcome to "Introduction to GitHub"! :wave:_
+<!--_Welcome to "Introduction to GitHub"! :wave:_
 
 **What is GitHub?**: GitHub is a collaboration platform that uses _[Git](https://docs.github.com/get-started/quickstart/github-glossary#git)_ for versioning. GitHub is a popular place to share and contribute to [open-source](https://docs.github.com/get-started/quickstart/github-glossary#open-source) software.
 <br>:tv: [Video: What is GitHub?](https://www.youtube.com/watch?v=pBy1zgt0XPc)
@@ -67,9 +67,9 @@ Branches allow you to separate your work from the `main` branch. In other words,
 -->
 
 ---
-
+<!-->
 Get help: [Post in our discussion board](https://github.com/orgs/skills/discussions/categories/introduction-to-github) &bull; [Review the GitHub status page](https://www.githubstatus.com/)
 
 &copy; 2024 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
-
+--!>
 </footer>
