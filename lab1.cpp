@@ -43,6 +43,8 @@
  */
 
 #include <iostream>
+#include "rect.hpp"
+#include "rect.cpp"
 
 int main()
 {
@@ -85,6 +87,18 @@ int main()
 
     /* {
         Rect rect;
+
+        they take garbage values because class elements are not initialized automatically.abs
+        TOASK: 
+        (gdb) pring Rect
+Undefined command: "pring".  Try "help".
+(gdb) print Rect
+$1 = {left = -8803760, right = 32767, top = -73752, bottom = 32767}
+(gdb) print Rect2
+$2 = {left = -8803760, right = 32767, top = -73752, bottom = 32767}
+
+*****why both got the same garbage value? what happened in the memory? 
+        
     } */
 
     /**
@@ -102,6 +116,14 @@ int main()
     
     /* {
         Rect rect(1, 2, 3, 4);
+        Объясните ошибку : if we have a parametered constructor like:  rect(int l,int r,int t,int b) : left(l), right(r), top(t), bottom(b) {} 
+        there will be a compiler error because we cant make a rect class without parameters, rect Rect; >> will give error
+
+        but we can make the constructor like this: 
+        rect () : left(0),right(0),top(0),bottom(0) {}
+        rect(int l,int r,int t,int b) : left(l), right(r), top(t), bottom(b) {}
+        it works both ways. 
+
     } */
 
     /**
@@ -113,9 +135,13 @@ int main()
      */
 
     /* {
-        Rect rect1(1, 2, 3, 4);
-        Rect rect2 = rect1;
-        Rect rect3(rect1);
+        Rect rect1(1, 2, 3, 4); : parametarized constructor
+        Rect rect2 = rect1; default shallow copy constructor
+        Rect rect3(rect1); default shallow copy constructor
+
+        ** for better use we can do a deep copy constructor to use with pointers. : 
+         rect (const rect& Original) 
+    :  left(Original.left) , right(Original.right) , top(Original.top) , bottom(Original.bottom){}
     } */
 
     /**
@@ -124,7 +150,9 @@ int main()
      * Что такое деструктор? Когда он вызывается? Есть ли деструктор в вашем
      * классе `Rect`? Что делает такой деструктор в вашем случае и в общем
      * случае?
-     *
+     * 
+     *  : it is the inverse of constructor, it deletes and frees memory (if we define using new we can delete using destructor or call destructor to free stack memory)
+     *  : destructor is called to delete the stack memory in my case when we exit the main function (in rect.cpp)
      * Определите в классе `Rect` деструктор, в котором поставьте отладочную
      * печать. Пронаблюдайте и зафиксируйте в предыдущих заданиях, когда
      * вызывается деструктор.
@@ -135,6 +163,8 @@ int main()
      *
      * Определите явно конструктор копирования в классе `Rect`, который делал
      * бы то же, что и конструктор копирования, определенный неявно.
+     *  
+     * rect (){}
      *
      * Добавьте во все конструкторы отладочную печать, которая бы печатала, какой 
      * конструктор вызван и адрес объекта через указатель `this`.
@@ -145,33 +175,33 @@ int main()
      * деструкторов и объясните это количество.
      */
 
-    /* {
-        Rect r1;
-        Rect *pR = new Rect(1,2,1,2);   
+
+    /* rect r1;  //default const called 
+        rect *pR = new rect(1,2,1,2);   // copy const called
         {
-            Rect r2(r1);
-            Rect arRect[2];
+            rect r2(r1); //copy const called
+            rect arRect[2]; //copy const called x2
             for(int i = 0; i < 3; i++)
             {
-                static Rect r3 (i,i,i,i) ;
-                Rect r4(*pR);
-                Rect r5(i,i,i,i);
-            }
-        }
-        delete pR;  
-    } */
+                static rect r3 (i,i,i,i) ;      //parameter constructor called (only in first iteration cause static)
+                rect r4(*pR);                   // copy called
+                rect r5(i,i,i,i);               //parameter called
+            }       //2x destrucors called after each iteration (cant destroy static)
+        } // 1x dest for r2called , 2x dest for arRect[2]
+        delete pR;  //dest for heap
+     */
 
     /**
      * Задание 1.7. Публичные и приватные поля класса.
      *
      * Сделайте все поля вашего класса приватными. Попробуйте в блоке кода ниже
-     * обратиться к полю напрямую. Объясните ошибку компиляции.
+     * обратиться к полю напрямую. Объясните ошибку компиляции. 
      */
 
     /* {
         Rect r1;
         std::cout << r1.<имя_поля> << std::endl;
-    } */
+    } */// **not accessible , needs getter / setter functions
 
     /**
      * Задание 1.8. Инкапсуляция. Методы для доступа к объектам класса.
@@ -235,6 +265,10 @@ int main()
      * Напишите в комментариях, чем функция-член отличается от обычной функции.
      */
 
+     /* member function : belongs in class, uses this pointer, has access to private section, needs an object (from the class) to call
+        regular function : doesn't belong in class, doesnt use this pointer , doesn't have access to private , and doesnt need object to call
+        */
+
     /**
      * Задание 1.9. Перегрузка функций и методов. Значение параметров по
      * умолчанию.
@@ -267,7 +301,7 @@ int main()
      */
 
     /* {
-        Rect r1(...), r2(...);
+        Rect r1(...), r2(...); TOASK
         Rect r3 = bounding_rect(r1, r2);
         print_rect(r3);
     } */
@@ -293,6 +327,11 @@ int main()
      */
 
     {
+        
+
+    rect r5(1,2,3,4); 
+    r5.set_width(10);
+    print_rect(r5); 
 
     }
 
