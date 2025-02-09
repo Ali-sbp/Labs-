@@ -45,6 +45,7 @@
 #include <iostream>
 #include "rect.hpp"
 #include "rect.cpp"
+#include "MyString.hpp"
 
 int main()
 {
@@ -328,7 +329,6 @@ $2 = {left = -8803760, right = 32767, top = -73752, bottom = 32767}
 
     {
         
-
     rect r5(1,2,3,4); 
     r5.set_width(10);
     print_rect(r5); 
@@ -460,12 +460,11 @@ $2 = {left = -8803760, right = 32767, top = -73752, bottom = 32767}
      * Проверьте, что ваша строка корректно работает в следующих ситуациях.
      */
 
-    /* {
+     {
         MyString s1;
         MyString s2 = s1;
-        MyString s3("This is my string");
-        MyString s4 = s3;
-    } */
+        //MyString s4 = s3;
+    } 
 
     /**
      * Задание 2.4. Объект-алгоритм.

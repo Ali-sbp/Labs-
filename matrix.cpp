@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdexcept>
 
+using namespace std;
 //identity
 Matrix::Matrix (int n) : rows (n), columns(n) {
     data = new double* [rows];
@@ -45,7 +46,7 @@ Matrix::~Matrix(){
 
 double Matrix::get(int i, int j) const{
      if (i < 0 || i >= rows || j < 0 || j >= columns) {
-        throw std::out_of_range("Index out of bounds");
+        throw out_of_range("Index out of bounds");
     }
     return data[i][j];
 }
@@ -54,7 +55,7 @@ double Matrix::get(int i, int j) const{
 void Matrix::set(int i, int j, double value) {
 
      if (i < 0 || i >= rows || j < 0 || j >= columns) {
-        throw std::out_of_range("Index out of bounds");
+        throw out_of_range("Index out of bounds");
     }
     data[i][j]= value; 
 }
@@ -77,7 +78,7 @@ void Matrix::negate(){
 //add in place 
 void Matrix::add_in_place(Matrix &other){
     if (rows != other.rows || columns != other.columns) {
-        throw std::invalid_argument("Matrix dimensions must match for addition");
+        throw invalid_argument("Matrix dimensions must match for addition");
     }
     for(int i=0; i<rows; i++){
         for (int j=0; j<columns; j++){
@@ -88,7 +89,7 @@ void Matrix::add_in_place(Matrix &other){
 //multiply
 Matrix Matrix::multiply(Matrix &other) const{
     if (columns != other.rows) {
-        throw std::invalid_argument("Incompatible matrix dimensions for multiplication");
+        throw invalid_argument("Incompatible matrix dimensions for multiplication");
     }
     Matrix result(rows, other.columns, 0);
     for (int i = 0; i < rows; i++) {
