@@ -43,9 +43,10 @@
  */
 
 #include <iostream>
-#include "rect.hpp"
-#include "rect.cpp"
-#include "MyString.hpp"
+#include "src/rect.hpp"
+#include "src/barrel.hpp"
+#include "src/MyString.hpp"
+#include "src/matrix.hpp"
 
 int main()
 {
