@@ -1,4 +1,4 @@
-#include "rect.hpp"
+#include "../src/rect.hpp"
 
 int main (){
      rect r5(1,2,3,4); 

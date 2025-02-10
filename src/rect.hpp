@@ -7,95 +7,56 @@ using namespace std;
 
 class rect {
     private:
-    int left,right,top,bottom;
+    //int left,right,top,bottom;
+    int BLx;
+    int BLy;
+    int width;
+    int height;
     public:
     
-    //default constructor
-   /*rect()  {
-        cout<<"default constructor called, object address:"<<this<<endl;
-    }*/
 
     // null constructor
-    rect () : left(0),right(0),top(0),bottom(0) {
-         cout<<"null constructor called, object addess:"<<this<<endl;
-    }
+    rect (); 
    
    
    //parametr constructor
-    rect(int l,int r,int t,int b) : left(l), right(r), top(t), bottom(b) {
-        cout<<"parameter constructor called, object addess:"<<this<<endl;
-    }
-
+    rect(int x,int y,int w,int h); 
 
    //copy constructor
-    rect (const rect& Original) 
-    :  left(Original.left) , right(Original.right) , top(Original.top) , bottom(Original.bottom){
-        cout<<"copy constructor called ,object addess:"<<this<<endl;
-    }
+    rect (const rect& other);
+    
 
-    ~rect () {
-        cout<<"destructor called"<<endl;
-    }
+    ~rect ();
 
     //getters 
 
-    int get_left() {return left;}
-    int get_right() {return right;}
-    int get_top() {return top;}
-    int get_bottom() {return bottom;}
-    int get_width() {return right-left;}
-    int get_height() {return top-bottom;}
-    int get_square(){return (get_width() * get_height());}
+    //int get_left()const;  didn't need to change , just changed for proper naming and commenting previous code.
+    int get_BLx()const;
+    //int get_right() const;
+    int get_BLy()const;
+    //int get_top()const;
+    //int get_bottom()const;
+    int get_width()const;
+    int get_height()const;
+    int get_square()const;
 
     //setters 
-    void set_all (int a, int b, int c, int d) { 
-        left = a;
-        right =b;
-        top = c;
-        bottom= d;
-    }
-    void set_width (int w){
-        if (left<right){
-            right = left + w;
-        }
-        else left= right + w;
-    }
-    void set_heigth (int h){
-        if (bottom < top){
-            top = bottom + h;
-        }
-        else bottom = top + h;
-    }
-   
+    void set_all (int a, int b, int c, int d);
 
-    void inflate (int amount) {
-        left = left - amount;
-        right = right + amount;
-        top = top + amount;
-        bottom = bottom - amount;
-    }
-    void inflate (int dw, int dh){
-        left = left - dw;
-        right = right + dw;
-        top = top + dh;
-        bottom = bottom - dh;
-    }
-    /*void move (int a){
-        left = left + a;
-        right = right + a;
-    }*/
-    void move (int a=0, int b=0){
-        left+= a;
-        right+= a;
-        top+= b;
-        bottom += b;
+    void set_width (int w);
 
-    }
-    void display () const {  
-        cout<< "rect: left="<<left<<"right= "<<right<<"top= "<<top<<"bottom= "<<bottom<<endl;
-    }
+    void set_heigth (int h);
 
-   friend rect bounding_rect (rect r1, rect r2);
+    void inflate (int amount);
+    
+    void inflate (int dw, int dh);
+    
+    void move (int a=0, int b=0);
+
+    void display () const;
+
+   //friend rect bounding_rect (const rect &r1, const rect &r2);
+   friend rect bounding_rect(const rect& r1, const rect& r2);
 
    friend void print_rect (const rect &r); 
     

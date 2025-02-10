@@ -2,7 +2,7 @@
 build/rect.o: src/rect.cpp src/rect.hpp
 	g++ -g -c -o build/rect.o src/rect.cpp
 
-# Test object files (no -Isrc needed)
+# Test object files
 build/test_bounding_rect.o: tests/test_bounding_rect.cpp
 	g++ -g -c -o build/test_bounding_rect.o tests/test_bounding_rect.cpp
 
@@ -37,4 +37,3 @@ test: build/test_bounding_rect.out build/test_rect_basic_methods.out build/test_
 
 clean:
 	rm -f build/*.o build/*.out
-
