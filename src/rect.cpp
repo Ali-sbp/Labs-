@@ -15,13 +15,13 @@ rect::rect(const rect &other):  left(other.left) , right(other.right) , top(othe
 rect::~rect()  {
     cout<<"destructor called"<<endl;
 }*/
-rect::rect() : BLx(0),BLy(0),width(0),height(0) {
+rect::rect() : left(0),bottom(0),width(0),height(0) {
     cout<<"null constructor called, object addess:"<<this<<endl;
 }
-rect::rect(int x, int y, int w, int h) : BLx(x), BLy(y), width(w), height(h) {
+rect::rect(int x, int y, int w, int h) : left(x), bottom(y), width(w), height(h) {
     cout<<"parameter constructor called, object addess:"<<this<<endl;
 }
-rect::rect(const rect &other):  BLx(other.BLx) , BLy(other.BLy) , width(other.width) , height(other.height){
+rect::rect(const rect &other):  left(other.left) , bottom(other.bottom) , width(other.width) , height(other.height){
     cout<<"copy constructor called ,object addess:"<<this<<endl;
 }
 rect::~rect()  {
@@ -30,23 +30,23 @@ rect::~rect()  {
 
 // getters 
 
-    //int rect::get_left()const {return left;}
-    int rect::get_BLx() const{return BLx;}
-    //int rect::get_right() const{return right;}
-    int rect::get_BLy()const {return BLy;}
-    //int rect::get_top()const {return top;}
-    //int rect::get_bottom()const {return bottom;}
+    int rect::get_left()const {return left;}
+    //int rect::get_BLx() const{return BLx;}
+    int rect::get_right() const{return left + width;}
+    //int rect::get_BLy()const {return BLy;}
+    int rect::get_top()const {return bottom + height;}
+    int rect::get_bottom()const {return bottom;}
     int rect::get_width()const {return width;} //changed 
-    int rect::get_height()const {return height;} //changed 
+    int rect::get_height()const {return height;} //changed
     int rect::get_square()const{return (get_width() * get_height());}
 
     //setters 
 
     void rect::set_all (int a, int b, int c, int d) { 
-        //left = a;
-        BLx=a;
-        //right =b;
-        BLy=b;
+        left = a;
+        //BLx=a;
+        bottom =b;
+        //BLy=b;
         //top = c;
         width=c;
         //bottom= d;
@@ -69,20 +69,20 @@ rect::~rect()  {
    
 
     void rect::inflate (int amount) {
-        //left = left - amount;
-        BLx= BLx - amount;
-        //right = right + amount;
-        BLy=BLy - amount;
+        left = left - amount;
+        //BLx= BLx - amount;
+        bottom = bottom - amount;
+        //BLy=BLy - amount;
         //top = top + amount;
         width=width + (2*amount);
         //bottom = bottom - amount;
         height=height + (2* amount);
     }
     void rect::inflate (int dw, int dh){
-        //left = left - dw;
-        BLx= BLx - dw;
-        //right = right + dw;
-        BLy=BLy-dh;
+        left = left - dw;
+        //BLx= BLx - dw;
+        bottom = bottom - dw;
+        //BLy=BLy-dh;
         //top = top + dh;
         width=width+(2*dw);
         //bottom = bottom - dh;
@@ -90,26 +90,28 @@ rect::~rect()  {
     }
     
     void rect::move (int a, int b){
-        //left+= a;
-        BLx+=a;
-        //right+= a;
+        left+= a;
+        //BLx+=a;
+        bottom+= b;
         //top+= b;
-        BLy+=b;
+        //BLy+=b;
         //bottom += b;
 
     }
     void rect::display () const {  
-        cout<< "rect: BLx="<<BLx<<"BLY= "<<BLy<<"width= "<<width<<"height= "<<height<<endl;
+        cout<< "rect: BLx="<<left<<"BLY= "<<bottom<<"width= "<<width<<"height= "<<height<<endl;
     }
 
-    /*rect bounding_rect(rect r1, rect r2){
+    rect bounding_rect(const rect &r1,const  rect &r2){
         int new_left= min(r1.get_left(), r2.get_left());
         int new_right= max(r1.get_right(),r2.get_right());
         int new_top= max(r1.get_top(),r2.get_top());
         int new_bottom= min(r1.get_bottom(), r2.get_bottom());
-        return rect(new_left, new_right, new_top, new_bottom); 
-    }*/
-    rect bounding_rect(const rect& r1, const rect& r2) {
+        int new_width = new_right - new_left;
+        int new_height = new_top - new_bottom;
+        return rect(new_left, new_bottom, new_width, new_height); 
+    }
+    /*rect bounding_rect(const rect& r1, const rect& r2) {
         
         int new_BLx = min(r1.get_BLx(), r2.get_BLx());
         int new_BLy = min(r1.get_BLy(), r2.get_BLy());
@@ -126,7 +128,7 @@ rect::~rect()  {
         int new_height = new_top - new_BLy;
         
         return rect(new_BLx, new_BLy, new_width, new_height);
-    }
+    }*/
 
 void print_rect(const rect &r) {
     r.display();

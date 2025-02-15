@@ -8,8 +8,8 @@ using namespace std;
 class rect {
     private:
     //int left,right,top,bottom;
-    int BLx;
-    int BLy;
+    int left; //blx
+    int bottom; //bly
     int width;
     int height;
     public:
@@ -30,12 +30,11 @@ class rect {
 
     //getters 
 
-    //int get_left()const;  didn't need to change , just changed for proper naming and commenting previous code.
-    int get_BLx()const;
-    //int get_right() const;
-    int get_BLy()const;
-    //int get_top()const;
-    //int get_bottom()const;
+    int get_left()const;  //didn't need to change , just changed for proper naming and commenting previous code.
+  
+    int get_right() const;
+    int get_top()const;
+    int get_bottom()const;
     int get_width()const;
     int get_height()const;
     int get_square()const;

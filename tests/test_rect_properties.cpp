@@ -19,12 +19,12 @@ int main() {
     //check set_width method
     r1.set_width(10); // 
     assert(r1.get_width() == 10);
-    //assert(r1.get_right() == r1.get_left() + 10); 
+
 
     //check set_height method
     r1.set_heigth(6); 
     assert(r1.get_height() == 6); 
-    //assert(r1.get_top() == r1.get_bottom() + 6);
+
 
     cout << "properties test passed!" <<endl;
     return 0;
