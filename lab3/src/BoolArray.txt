@@ -1,0 +1,13 @@
+BoolArray (task 6) Proxy Class Notes
+did Task 6 two ways.first used inner class BitReference, then tried separate proxy.
+
+~~> moved bit reference handling outside BoolArray into BoolProxy ~~> Had to add friend declaration. more explicit about who handles what.
+
+core bit logic ~~>*identical* - same bit math,operations,memory efficiency (8x better than naive bool).
+
+proxy class : more like std lib ~~> separate components. More work but reusable elsewhere??? Could use for other bit containers.(Maybe?)
+
+proxy more "exposed" to users vs inner class ~~> implementation detail. had to think about interface more.
+
+can you please give a similar exercise in which the proxy method is ~more preferred? 
+

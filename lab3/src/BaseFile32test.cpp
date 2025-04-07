@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstring>
-#include "../src/BaseFile.hpp"
+#include "BaseFile.hpp"
 
 int main() {
     // Write phase

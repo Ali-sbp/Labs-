@@ -65,6 +65,122 @@ Matrix& Matrix::operator=(const Matrix &other){
     return *this;
 }
 
+//ops
+
+//+=
+Matrix& Matrix::operator+=(const Matrix& other){
+    if ( rows !=other.rows || columns != other.columns ){
+        throw std::invalid_argument("matrixs have different dimentions");
+    }
+    add_in_place(const_cast<Matrix&>(other));
+    return *this;
+}
+//-=
+Matrix& Matrix::operator-=(const Matrix& other){
+    if ( rows !=other.rows || columns != other.columns ){
+        throw std::invalid_argument("matrixs have different dimentions");
+    }
+    for (int i=0; i<rows; i++){
+        for(int j=0; j<columns; j++){
+            data[i][j] -= other.data[i][j];
+        }
+    }
+    return *this;
+}
+//*=
+Matrix& Matrix::operator*=(double scalar){
+    for (int i=0; i<rows; i++){
+        for(int j=0; j<columns; j++){
+            data[i][j] *= scalar;
+        }
+    }
+    return *this;
+}
+///=
+Matrix& Matrix::operator/=(double scalar){
+    if (scalar ==0 ){
+        throw std::invalid_argument("can't divide by 0");
+    }
+    for (int i=0; i<rows; i++){
+        for(int j=0; j<columns; j++){
+            data[i][j] /= scalar;
+        }
+    }
+    return *this;
+}
+// +
+Matrix Matrix::operator+(const Matrix& other) const{
+    if ( rows !=other.rows || columns != other.columns ){
+        throw std::invalid_argument("matrixs have different dimentions");
+    }
+    Matrix result(*this);
+    result.add_in_place(const_cast<Matrix&>(other));
+    return result;
+
+}
+// -
+Matrix Matrix::operator-(const Matrix& other) const{
+    if ( rows !=other.rows || columns != other.columns ){
+        throw std::invalid_argument("matrixs have different dimentions");
+    }
+    Matrix result(*this);
+    for (int i=0; i<rows; i++){
+        for(int j=0; j<columns; j++){
+            result.data[i][j] -= other.data[i][j];
+        }
+    
+    }
+    return result;
+}
+// *
+Matrix Matrix::operator*(const Matrix& other) const{
+    if (rows != other.columns ) {
+        throw std::invalid_argument ("can't multiply, rows/cols dont match");
+    }
+    Matrix result(*this);
+
+    result.multiply(const_cast<Matrix&>(other));
+    return result;
+}
+Matrix Matrix::operator*(double scalar){
+    
+    Matrix result(*this);
+    for (int i=0; i<rows; i++){
+        for(int j=0; j<columns; j++){
+            result.data[i][j] *= scalar;
+        }
+    }
+    return result;
+}
+// / 
+Matrix Matrix::operator/(double scalar){
+    if (scalar == 0 ){
+        throw std::invalid_argument("cant divite by 0");
+    }
+    Matrix result(*this);
+    for (int i=0; i<rows; i++){
+        for(int j=0; j<columns; j++){
+            result.data[i][j] /= scalar;
+        }
+    
+    }
+    return result;
+}
+// double * matrix
+Matrix operator*(double scalar, const Matrix& m){
+    Matrix result(m);
+    for (int i=0; i<result.rows; i++){
+        for(int j=0; j<result.columns; j++){
+            result.data[i][j] *= scalar;
+        }
+    }
+    return result;
+}
+Matrix operator-(const Matrix& m){
+    Matrix result(m);
+    result.negate();
+    return result;
+}
 //get value
 
 double Matrix::get(int i, int j) const{
@@ -109,6 +225,7 @@ void Matrix::add_in_place(Matrix &other){
         }
     }
 }
+
 //multiply
 Matrix Matrix::multiply(Matrix &other) const{
     if (columns != other.rows) {
@@ -124,6 +241,7 @@ Matrix Matrix::multiply(Matrix &other) const{
     }
     return result;
 }
+
 
 //[print]
 void Matrix::print(){

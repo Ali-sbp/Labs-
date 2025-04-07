@@ -126,6 +126,7 @@ int main() {
     write_int(*writer, 123456); //~~> base32 ~~> base32 ~~> Rle ~~>write
     delete writer;
 
+    //extra~! : reading backwards and it all works 
     // File ~~> Rle decompress ~~> base32 decode ~~> base32 decode
     IFile* reader = new Base32File2(new Base32File2(new RleFile2(new BaseFile("../tests/output33.txt", "rb"))));
     char buffer[7] = {0}; // + null terminator
@@ -133,7 +134,7 @@ int main() {
     cout << "\n ** \n Bytes read: " << bytes_read << ", Buffer: " << buffer <<"\n ** \n"<<endl;
     delete reader;
 }
-//test
+
 
 
 return 0;

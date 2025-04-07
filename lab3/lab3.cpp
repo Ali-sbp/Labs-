@@ -104,6 +104,11 @@ int main() {
      * Какую из этих функций нельзя перегрузить методом класса? Почему?
      */
 
+     // double * Matrix :
+
+     /* because operator operates on the left operand (which has to be a matrix) but here its double * matrix, therefore it can not be a method.
+     */
+
     /**
      * Задание 1.2.4. Операторы для строки.
      *
@@ -233,7 +238,7 @@ int main() {
      */
 
     {
-
+        // /tests/test_ShortArray.cpp
     }
 
     /**
@@ -260,6 +265,9 @@ int main() {
      */
 
     {
+        // sizeof(short*) = 8 bytes
+        // sizeof(size_t) = 8 bytes
+        // /tests/test_OptimizedShortArray.cpp
 
     }
 
@@ -279,6 +287,8 @@ int main() {
      * Добейтесь, чтобы ваш класс работал, как в пункте 3.2, при этом его размер
      * был бы равен `sizeof(short *) + 2 * sizeof(size_t)`.
      */
+
+     // tests/test_BitOptimizedShortArray.cpp
 
     /**
      * Задание 4. Ассоциативный массив. Итератор. Операторы инкремента.
@@ -307,6 +317,7 @@ int main() {
         std::cout << "Ivanov's name = " << db["Ivanov"].name << "\n";
         std::cout << "Petrov's age = " << db["Petrov"].age << "\n";
     } */
+   // /tests/test_WorkerDb.cpp
 
     /**
      * Задание 4.2. Итератор.
@@ -369,7 +380,7 @@ int main() {
      * возраст сотрудников. Эти функции не должны быть дружественными классу
      * `WorkerDb`.
      */
-
+        // /tests/test_WorkerDb.cpp
     /**
      * Задание 5. Неявно определенные операторы. Удаление операторов.
      *
@@ -450,6 +461,8 @@ int main() {
         //...
 
     } */
+
+    // /tests/test_BoolArray.cpp
 
 	return 0;
 }

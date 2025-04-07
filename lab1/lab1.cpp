@@ -93,6 +93,7 @@ int main()
         they take garbage values because class elements are not initialized automatically.abs
         TOASK: 
         (gdb) pring Rect
+Undefined command: "pring".  Try "help".
 (gdb) print Rect
 $1 = {left = -8803760, right = 32767, top = -73752, bottom = 32767}
 (gdb) print Rect2

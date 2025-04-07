@@ -191,14 +191,28 @@ size_t Base32File::read(void* buf, size_t max_bytes) {
     delete[] encoded;
     return decoded;
 }
+//Pull 2: updated constructors after adding new class fields 
 RleFile::RleFile(const char* path, const char* mode) : BaseFile(path, mode) {
-    cout << "RleFile path constructor called: " << path << ", mode: " << mode <<endl;
-};
-RleFile::RleFile(FILE* f) : BaseFile(f) {
-    cout << "RleFile FILE* constructor called" <<endl;
+    compressed_buffer = nullptr;
+    buffer_size = 0;
+    buffer_pos = 0;
+    buffer_capacity = 0;
+    cout << "RleFile path constructor called: " << path << ", mode: " << mode << endl;
 }
+
+RleFile::RleFile(FILE* f) : BaseFile(f) {
+    compressed_buffer = nullptr;
+    buffer_size = 0;
+    buffer_pos = 0;
+    buffer_capacity = 0;
+    cout << "RleFile FILE* constructor called" << endl;
+}
+
 RleFile::~RleFile() {
-    cout << "RleFile destructor called" <<endl;
+    if (compressed_buffer != nullptr) {
+        delete[] compressed_buffer;
+    }
+    cout << "RleFile destructor called" << endl;
 }
 
 size_t RleFile::compress_rle(const char* raw_data, size_t raw_size, char* dst){
@@ -254,7 +268,8 @@ size_t RleFile::write(const void* buf, size_t n_bytes){
     
     return bytes_written;
 }
-size_t RleFile::read(void* buf, size_t max_bytes) {
+//old read function Pull2
+/*size_t RleFile::read(void* buf, size_t max_bytes) {
     if (!is_open()) return 0;
     char* output = static_cast<char*>(buf);
     size_t max_compressed_size = 2 * max_bytes;
@@ -271,8 +286,51 @@ size_t RleFile::read(void* buf, size_t max_bytes) {
     size_t decompressed_size = decompress_rle(compressed, bytes_read, output);
     delete[] compressed;
     return (decompressed_size > max_bytes) ? max_bytes : decompressed_size;
-}
+}*/
+//Pull2: fixed buffer over flow
+size_t RleFile::read(void* buf, size_t max_bytes) {
+    if (!is_open()) return 0;
+    char* output = static_cast<char*>(buf);
 
+    if (buffer_pos >= buffer_size) {
+        const size_t chunk_size = 1024;
+        if (buffer_capacity < chunk_size) {
+            if (compressed_buffer != nullptr) delete[] compressed_buffer;
+            compressed_buffer = new char[chunk_size];
+            buffer_capacity = chunk_size;
+        }
+        size_t bytes_read = read_raw(compressed_buffer, chunk_size);
+        if (bytes_read == 0 || bytes_read % 2 != 0) {
+            buffer_size = 0;
+            buffer_pos = 0;
+            return 0;
+        }
+        buffer_size = bytes_read;
+        buffer_pos = 0;
+    }
+
+    size_t decompressed_size = 0;
+    size_t pos = buffer_pos;
+    char* out_ptr = output;
+
+    while (pos < buffer_size && decompressed_size < max_bytes) {
+        unsigned char count = static_cast<unsigned char>(compressed_buffer[pos]);
+        char value = compressed_buffer[pos + 1];
+        // ~>stop at max_byte
+        if (decompressed_size + count <= max_bytes) {
+            for (size_t j = 0; j < count; j++) {
+                *out_ptr++ = value;
+            }
+            decompressed_size += count;
+            pos += 2;
+        } else {
+            break; //leave for next read
+        }
+    }
+    buffer_pos = pos;
+
+    return decompressed_size;
+}
 //2.5
 /*void write_int(BaseFile& file, int n) {
     if (n < 0) {
@@ -341,13 +399,24 @@ size_t Base32File2::write(const void* buf, size_t n_bytes) {
     return bytes_written;
 }
 
-size_t Base32File2::read(void* buf, size_t max_bytes) {
+/*size_t Base32File2::read(void* buf, size_t max_bytes) {
     size_t encoded_max = (max_bytes * 8 + 4) / 5;
     char* encoded = new char[encoded_max + 1];
     size_t bytes_read = target->read(encoded, encoded_max);
     encoded[bytes_read] = '\0'; // ~~~~~~~~~~~>> reads 1 extra byte, causes overflow
     std::cout << "Base32 read: " << std::string(encoded, bytes_read) << ", Bytes: " << bytes_read << std::endl;
     size_t decoded = decode32(encoded, bytes_read, static_cast<char*>(buf));
+    std::cout << "Base32 decoded: " << std::string((char*)buf, decoded) << ", Size: " << decoded << std::endl;
+    delete[] encoded;
+    return decoded;
+}*/ 
+size_t Base32File2::read(void* buf, size_t max_bytes) {
+    size_t encoded_max = (max_bytes * 8 + 4) / 5;
+    char* encoded = new char[encoded_max + 1];
+    size_t bytes_read = target->read(encoded, encoded_max);
+    encoded[bytes_read] = '\0';
+    std::cout << "Base32 read: " << std::string(encoded, bytes_read) << ", Bytes: " << bytes_read << std::endl;
+    size_t decoded = decode32(encoded, bytes_read, static_cast<char*>(buf), max_bytes); // Pull2 :added max_bytes to call and editted decode32 func accordingly
     std::cout << "Base32 decoded: " << std::string((char*)buf, decoded) << ", Size: " << decoded << std::endl;
     delete[] encoded;
     return decoded;
@@ -428,7 +497,8 @@ size_t Base32File2::encode32(const char* raw_data, int raw_size, char* dst) {
     return chars;
 }
 */
-size_t Base32File2::decode32(const char* encoded_data, int encoded_size, char* dst) {
+//editted to limit reads to maxbyte Pull2:
+/*size_t Base32File2::decode32(const char* encoded_data, int encoded_size, char* dst) {
     if (!encoded_data || encoded_size <= 0 || !dst) return 0;
 
     int totalBits = encoded_size * 5;
@@ -465,7 +535,7 @@ size_t Base32File2::decode32(const char* encoded_data, int encoded_size, char* d
 
     delete[] binaryData;
     return byteIndex;
-}
+}*/
 /*size_t Base32File2::decode32(const char* encoded_data, int encoded_size, char* dst) {
     if (!encoded_data || encoded_size <= 0 || !dst) return 0;
     int totalBits = encoded_size * 5;
@@ -504,11 +574,53 @@ size_t Base32File2::decode32(const char* encoded_data, int encoded_size, char* d
     delete[] binaryData;
     return bytes_out;
 }*/
-RleFile2::RleFile2(IFile* target) : target(target) {}
+size_t Base32File2::decode32(const char* encoded_data, int encoded_size, char* dst, size_t max_bytes) {
+    if (!encoded_data || encoded_size <= 0 || !dst) return 0;
+    int totalBits = encoded_size * 5;
+    int* binaryData = new int[totalBits];
+    int bitIndex = 0;
+    for (int i = 0; i < encoded_size; i++) {
+        char symbol = encoded_data[i];
+        int val = -1;
+        for (int j = 0; j < 32; j++) {
+            if (encoding_map[j] == symbol) {
+                val = j;
+                break;
+            }
+        }
+        if (val == -1) {
+            delete[] binaryData;
+            return 0;
+        }
+        for (int j = 4; j >= 0; j--) {
+            binaryData[bitIndex++] = (val >> j) & 1;
+        }
+    }
+    size_t byteIndex = 0;
+    for (int i = 0; i < totalBits && byteIndex < max_bytes; i += 8) {
+        int byte = 0; // added condition up there to limit reading to maxbyte fixing stack overflow : Pull2
+        for (int j = 0; j < 8 && i + j < totalBits; j++) {
+            byte = (byte << 1) | binaryData[i + j];
+        }
+        dst[byteIndex++] = static_cast<char>(byte);
+    }
+    delete[] binaryData;
+    return byteIndex;
+}
+//Pull 2: updated constructors Pull2: 
+RleFile2::RleFile2(IFile* target) : target(target) {
+    compressed_buffer = nullptr;
+    buffer_size = 0;
+    buffer_pos = 0;
+    buffer_capacity = 0;
+}
 
 RleFile2::~RleFile2() {
-    cout<<"RleFile2 Des Called"<<endl;
-    delete target; //clean up owned IFile*
+    delete target;
+    if (compressed_buffer != nullptr) {
+        delete[] compressed_buffer;
+    }
+    cout << "RleFile2 Des Called" << endl;
 }
 
 bool RleFile2::can_read() const {
@@ -529,7 +641,7 @@ size_t RleFile2::write(const void* buf, size_t n_bytes) {
     return bytes_written;
 }
 
-size_t RleFile2::read(void* buf, size_t max_bytes) {
+/*size_t RleFile2::read(void* buf, size_t max_bytes) {
     char* compressed = new char[2 * max_bytes];
     size_t bytes_read = target->read(compressed, 2 * max_bytes);
     if (bytes_read == 0 || bytes_read % 2 != 0) {
@@ -543,8 +655,50 @@ size_t RleFile2::read(void* buf, size_t max_bytes) {
     delete[] temp;
     delete[] compressed;
     return bytes_to_copy;
-}
+}*/
+//pull2:
+size_t RleFile2::read(void* buf, size_t max_bytes) {
+    if (!can_read()) return 0;
+    char* output = static_cast<char*>(buf);
 
+    if (buffer_pos >= buffer_size) {
+        const size_t chunk_size = 1024;
+        if (buffer_capacity < chunk_size) {
+            if (compressed_buffer != nullptr) delete[] compressed_buffer;
+            compressed_buffer = new char[chunk_size];
+            buffer_capacity = chunk_size;
+        }
+        size_t bytes_read = target->read(compressed_buffer, chunk_size);
+        if (bytes_read == 0 || bytes_read % 2 != 0) {
+            buffer_size = 0;
+            buffer_pos = 0;
+            return 0;
+        }
+        buffer_size = bytes_read;
+        buffer_pos = 0;
+    }
+
+    size_t decompressed_size = 0;
+    size_t pos = buffer_pos;
+    char* out_ptr = output;
+
+    while (pos < buffer_size && decompressed_size < max_bytes) {
+        unsigned char count = static_cast<unsigned char>(compressed_buffer[pos]);
+        char value = compressed_buffer[pos + 1];
+        if (decompressed_size + count <= max_bytes) {
+            for (size_t j = 0; j < count; j++) {
+                *out_ptr++ = value;
+            }
+            decompressed_size += count;
+            pos += 2;
+        } else {
+            break; //leave count for next read
+        }
+    }
+    buffer_pos = pos;
+
+    return decompressed_size;
+}
 size_t RleFile2::compress_rle(const char* raw_data, size_t raw_size, char* dst){
     if (!raw_data || raw_size == 0 || !dst) return 0;
     size_t dst_pos = 0;

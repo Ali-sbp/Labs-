@@ -17,7 +17,7 @@ class IFile {
         int encoded32_size(int rsize);
         int decoded32_size(int esize);
         size_t encode32(const char* raw_data, int raw_size, char* dst);
-        size_t decode32(const char* encoded_data, int encoded_size, char* dst);
+        size_t decode32(const char* encoded_data, int encoded_size, char* dst, size_t max_bytes);
     
     public:
         Base32File2(IFile* target, const char* table = "abcdefghijklmnopqrstuvwxyz012345");
@@ -32,6 +32,10 @@ class IFile {
     class RleFile2 : public IFile {
         private:
             IFile* target; //
+            char* compressed_buffer;  //pull2: added requested buffer class field
+            size_t buffer_size;
+            size_t buffer_pos;
+            size_t buffer_capacity;
             size_t compress_rle(const char* raw_data, size_t raw_size, char* dst);
             size_t decompress_rle(const char* compressed_data, size_t compressed_size, char* dst);
             
@@ -89,6 +93,10 @@ class IFile {
     };
         class RleFile : public BaseFile {
         private:
+        char* compressed_buffer;  //pull2: added requested buffer class field
+        size_t buffer_size;
+        size_t buffer_pos;
+        size_t buffer_capacity;
         size_t compress_rle(const char* raw_data, size_t raw_size, char* dst);
         size_t decompress_rle(const char* compressed_data, size_t compressed_size, char* dst);
         
